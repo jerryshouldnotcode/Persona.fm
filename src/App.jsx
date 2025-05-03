@@ -6,16 +6,30 @@ function App() {
   const [token, setToken] = useState("");
 
   useEffect(() => {
+    // Check for token in URL hash when component mounts
     const hash = handleAuthCallback();
     const _token = hash.access_token;
 
     if (_token) {
       setToken(_token);
+      // Store token in localStorage for persistence
+      localStorage.setItem("spotify_token", _token);
+    } else {
+      // Check localStorage for existing token
+      const storedToken = localStorage.getItem("spotify_token");
+      if (storedToken) {
+        setToken(storedToken);
+      }
     }
   }, []);
 
   const handleLogin = () => {
     window.location.href = getAuthUrl();
+  };
+
+  const handleLogout = () => {
+    setToken("");
+    localStorage.removeItem("spotify_token");
   };
 
   return (
@@ -29,7 +43,9 @@ function App() {
         ) : (
           <div>
             <h2>Successfully logged in!</h2>
-            {/* We'll add more content here later */}
+            <button onClick={handleLogout} className="logout-button">
+              Logout
+            </button>
           </div>
         )}
       </header>
