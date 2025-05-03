@@ -1,6 +1,6 @@
 // Spotify API credentials
-const CLIENT_ID = 'YOUR_CLIENT_ID'; // You'll need to replace this with your actual client ID
-const REDIRECT_URI = 'http://localhost:5173/callback'; // Default Vite dev server port
+const CLIENT_ID = '0be86b95af224d1c9404b389bd28039c'; // You'll need to replace this with your actual client ID
+const REDIRECT_URI = 'https://persona-fm.vercel.app/'; // Default Vite dev server port
 const AUTH_ENDPOINT = 'https://accounts.spotify.com/authorize';
 const RESPONSE_TYPE = 'token';
 
