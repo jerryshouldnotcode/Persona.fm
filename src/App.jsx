@@ -6,17 +6,20 @@ function App() {
   const [token, setToken] = useState("");
 
   useEffect(() => {
-    // Check for token in URL hash when component mounts
+    console.log("Component mounted, checking for token...");
     const hash = handleAuthCallback();
+    console.log("URL hash:", hash);
     const _token = hash.access_token;
+    console.log("Extracted token:", _token);
 
     if (_token) {
+      console.log("Setting new token");
       setToken(_token);
-      // Store token in localStorage for persistence
       localStorage.setItem("spotify_token", _token);
     } else {
-      // Check localStorage for existing token
+      console.log("No token in URL, checking localStorage");
       const storedToken = localStorage.getItem("spotify_token");
+      console.log("Stored token:", storedToken);
       if (storedToken) {
         setToken(storedToken);
       }
@@ -24,10 +27,12 @@ function App() {
   }, []);
 
   const handleLogin = () => {
+    console.log("Login clicked, redirecting to:", getAuthUrl());
     window.location.href = getAuthUrl();
   };
 
   const handleLogout = () => {
+    console.log("Logging out");
     setToken("");
     localStorage.removeItem("spotify_token");
   };

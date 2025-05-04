@@ -20,6 +20,7 @@ export const getAuthUrl = () => {
 
 // Handle the authentication callback
 export const handleAuthCallback = () => {
+    console.log("Current URL hash:", window.location.hash);
     const hash = window.location.hash
         .substring(1)
         .split('&')
@@ -31,6 +32,7 @@ export const handleAuthCallback = () => {
             return initial;
         }, {});
 
+    console.log("Processed hash object:", hash);
     window.location.hash = '';
     return hash;
 }; 
