@@ -1,4 +1,4 @@
-import dotenv from 'dotenv';
+import 'dotenv/config';
 import express from 'express';
 import axios from 'axios';
 import cors from 'cors';
@@ -8,7 +8,10 @@ app.use(cors());
 
 const CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
 const CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
-const REDIRECT_URI = process.env.SPOTIFY_REDIRECT_URI;
+const REDIRECT_URI = encodeURIComponent(process.env.SPOTIFY_REDIRECT_URI);
+
+console.log('Client ID:', CLIENT_ID);
+console.log('Redirect URI:', REDIRECT_URI);
 
 // 1. Redirect user to Spotify authorization
 app.get('/login', (req, res) => {
