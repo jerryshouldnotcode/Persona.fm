@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { getAuthUrl, handleAuthCallback } from './spotifyAuth'
+import { getAuthUrl, handleAuthCallback } from './spotifyAuth.js'
 import './App.css'
 
 function App() {

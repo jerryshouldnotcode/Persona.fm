@@ -1,8 +1,6 @@
 // Spotify API credentials
-const CLIENT_ID = '0be86b95af224d1c9404b389bd28039c'; // You'll need to replace this with your actual client ID
-const REDIRECT_URI = 'https://persona-fm.vercel.app/'; // Default Vite dev server port
 const AUTH_ENDPOINT = 'https://accounts.spotify.com/authorize';
-const RESPONSE_TYPE = 'token';
+const RESPONSE_TYPE = 'code';
 
 // Scopes for the permissions we need
 const SCOPES = [
