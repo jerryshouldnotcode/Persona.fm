@@ -49,6 +49,13 @@ app.get('/callback', async (req, res) => {
   }
 });
 
+app.get('/api/config', (req, res) => {
+  res.json({
+    clientId: CLIENT_ID,
+    redirectUri: REDIRECT_URI
+  });
+});
+
 app.get('/', (req, res) => {
   res.send('Spotify Auth Backend is running!');
 });

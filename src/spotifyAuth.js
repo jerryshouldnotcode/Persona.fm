@@ -1,10 +1,20 @@
-import dotenv from 'dotenv';
-
 // Spotify API credentials
-const CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
-const REDIRECT_URI = process.env.SPOTIFY_REDIRECT_URI;
 const AUTH_ENDPOINT = 'https://accounts.spotify.com/authorize';
 const RESPONSE_TYPE = 'code';
+
+let CLIENT_ID;
+let REDIRECT_URI;
+
+// Fetch configuration from the backend
+const fetchConfig = async () => {
+    const response = await fetch('api/config');
+    const config = await response.json();
+    CLIENT_ID = config.clientId;
+    REDIRECT_URI = config.redirectUri;
+};
+
+// so that CLIENT_ID and REDIRECT_URI are initialized
+fetchConfig();
 
 // Scopes for the permissions we need
 const SCOPES = [
@@ -38,3 +48,6 @@ export const handleAuthCallback = () => {
     window.location.hash = '';
     return hash;
 }; 
+
+// Call fetchConfig to ensure CLIENT_ID and REDIRECT_URI are set before using them
+fetchConfig();
