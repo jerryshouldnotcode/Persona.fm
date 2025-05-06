@@ -6,9 +6,9 @@ import cors from 'cors';
 const app = express();
 app.use(cors());
 
-const CLIENT_ID = process.env.VITE_SPOTIFY_CLIENT_ID;
-const CLIENT_SECRET = process.env.VITE_SPOTIFY_CLIENT_SECRET;
-const REDIRECT_URI = process.env.VITE_SPOTIFY_REDIRECT_URI;
+const CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
+const CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
+const REDIRECT_URI = process.env.SPOTIFY_REDIRECT_URI;
 
 console.log('Client ID:', CLIENT_ID);
 console.log('Redirect URI:', REDIRECT_URI);
@@ -25,6 +25,9 @@ app.get('/login', (req, res) => {
   const authUrl = `https://accounts.spotify.com/authorize?response_type=code&client_id=${CLIENT_ID}&scope=${encodeURIComponent(scope)}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}`;
   res.redirect(authUrl);
 });
+
+console.log('Login successful!')
+
 
 // 2. Spotify redirects back to this endpoint with a code
 app.get('/callback', async (req, res) => {
@@ -67,3 +70,5 @@ const PORT = process.env.PORT || 8888;
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
+
+export default app; // Export the app for Vercel to use
