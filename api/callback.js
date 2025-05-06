@@ -6,9 +6,9 @@ import cors from 'cors';
 const app = express();
 app.use(cors());
 
-const CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
-const CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
-const REDIRECT_URI = encodeURIComponent(process.env.SPOTIFY_REDIRECT_URI);
+const CLIENT_ID = process.env.VITE_SPOTIFY_CLIENT_ID;
+const CLIENT_SECRET = process.env.VITE_SPOTIFY_CLIENT_SECRET;
+const REDIRECT_URI = process.env.VITE_SPOTIFY_REDIRECT_URI;
 
 console.log('Client ID:', CLIENT_ID);
 console.log('Redirect URI:', REDIRECT_URI);
