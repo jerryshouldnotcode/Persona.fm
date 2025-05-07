@@ -11,3 +11,4 @@ this one, but I guess the site is more secure now
 - Vite's dev-proxy vs Vercel serverless backend (and how to route data separately to both)
 
 - how hyperprecise Spotify requires the client_id and redirect_uri to be (I get it, but trailing whitespace? really?)
+
