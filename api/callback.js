@@ -151,9 +151,4 @@ app.get('/', (req, res) => {
 });
 
 // Start the server
-const PORT = process.env.PORT || 8888; // Define the port
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`); // Log the server URL
-});
-
-export default app;
+module.exports = app;
