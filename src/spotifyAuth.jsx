@@ -11,6 +11,10 @@ export default function SpotifyLogin() {
 
   if (!cfg) return <p>Loading…</p>;
 
+  // Generate the verifier and store it in local storage
+  const verifier = genVerifier();
+  localStorage.setItem('sp_verifier', verifier);
+  
   const params = new URLSearchParams({
     client_id: cfg.clientId,
     redirect_uri: cfg.redirectUri,
