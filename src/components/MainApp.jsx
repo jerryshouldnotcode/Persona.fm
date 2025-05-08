@@ -12,7 +12,7 @@ export default function MainApp() {
     if (!token) return;
     setLoading(true);
 
-    spotifyFetch('/api/me/top-tracks')
+    spotifyFetch(`${import.meta.env.VITE_API_BASE_URL}/api/me/top-tracks`)
       .then(data => {
         setTracks(data.items || []);
       })

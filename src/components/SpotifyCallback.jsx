@@ -16,7 +16,7 @@ export default function SpotifyCallback() {
       return;
     }
 
-    fetch('/api/token', {
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/token`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ code, verifier })
