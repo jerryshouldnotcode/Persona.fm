@@ -4,7 +4,7 @@ export default function SpotifyLogin() {
   const [cfg, setCfg] = useState(null);
 
   useEffect(() => {
-    fetch('/api/config')
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/config`)
       .then(r => r.json())
       .then(setCfg);
   }, []);
