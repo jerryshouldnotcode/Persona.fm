@@ -2,21 +2,24 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+
 export default function SpotifyCallback() {
   const navigate = useNavigate();
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const code = params.get('code');
-    if (!code) {
-      console.error('No code in URL');
+    const verifier = window.localStorage.getItem('pkce_verifier');
+
+    if (!code || !verifier) {
+      console.error('No code or verifier in URL/localStorage');
       return;
     }
 
     fetch('/api/token', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ code })
+      body: JSON.stringify({ code, verifier })
     })
       .then(res => res.json())
       .then(tokens => {

@@ -12,7 +12,7 @@ export default function SpotifyLogin() {
   if (!cfg) return <p>Loading…</p>;
 
   return (
-    <button onClick={() => window.location.href = '/login'}>
+    <button onClick={() => window.location.href = `${import.meta.env.VITE_API_BASE_URL}/login`}>
       Log in with Spotify
     </button>
   );

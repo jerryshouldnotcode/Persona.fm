@@ -18,7 +18,9 @@ export async function spotifyFetch(path, opts = {}) {
 
   // 3) Now make the real call, with a valid token in hand
   const token = localStorage.getItem('spotify_token');
-  const res = await fetch(path, {
+  const base = import.meta.env.VITE_API_BASE_URL;
+  const res = await fetch(`${base}${path}`, {
+    credentials: 'include',
     ...opts,
     headers: {
       ...(opts.headers || {}),

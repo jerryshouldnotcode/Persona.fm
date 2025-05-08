@@ -4,12 +4,13 @@ import cors from 'cors';
 import session from 'express-session';
 import axios from 'axios';
 import crypto from 'crypto';
+import bodyParser from 'bodyParser';
 
 const app = express();
 app.use(express.json());
 
 app.use(cors({
-  origin: 'http://127.0.0.1:5173/',  // your Vite dev URL
+  origin: ['http://127.0.0.1:5173/', 'https://persona-fm.vercel.app'], // your Vite dev URL
   credentials: true,                // <— allow cookies to be sent
 }));
 
@@ -19,7 +20,7 @@ app.use(session({
   saveUninitialized: true,
   cookie: {
     sameSite: 'lax',  // or 'none' if you go https+secure
-    secure: false,    // set to true if you’re serving over HTTPS
+    secure: true,    // set to true if you're serving over HTTPS
   }
 }));
 
