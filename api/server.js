@@ -6,20 +6,27 @@ import axios from 'axios';
 import crypto from 'crypto';
 
 const app = express();
-app.use(cors());
 app.use(express.json());
 
-const SPOTIFY_CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
-const SPOTIFY_REDIRECT_URI = process.env.SPOTIFY_REDIRECT_URI;
+app.use(cors({
+  origin: 'http://127.0.0.1:5173/',  // your Vite dev URL
+  credentials: true,                // <— allow cookies to be sent
+}));
 
-// Simple in‑memory session for dev; swap for Redis/DB in prod
 app.use(session({
   secret: process.env.SESSION_SECRET || crypto.randomUUID(),
   resave: false,
   saveUninitialized: true,
+  cookie: {
+    sameSite: 'lax',  // or 'none' if you go https+secure
+    secure: false,    // set to true if you’re serving over HTTPS
+  }
 }));
 
-console.log('Start-up:', SPOTIFY_CLIENT_ID); // Logs the Spotify client ID
+
+const SPOTIFY_CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
+const SPOTIFY_REDIRECT_URI = process.env.SPOTIFY_REDIRECT_URI;
+
 
 // Helpers -------------------------------------------------------------
 function genVerifier(len = 64) {
@@ -116,18 +123,90 @@ app.post('/api/token', async (req, res) => {
       code_verifier: verifier,
     });
 
-    const spotifyRes = await axios.post(
+    const tokenRes = await axios.post(
       'https://accounts.spotify.com/api/token',
       body.toString(),
       { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
     );
 
-    res.json(spotifyRes.data);           // { access_token, refresh_token, … }
+    // …after tokenRes = await axios.post(…)
+    const { access_token, refresh_token, expires_in } = tokenRes.data;
+
+    // stash in session
+    req.session.access_token  = access_token;
+    req.session.refresh_token = refresh_token;
+    req.session.expires_at    = Date.now() + expires_in * 1000;
+
+    // then respond (or redirect) as you like
+    res.json({ access_token });
+
   } catch (err) {
     console.error(err.response?.data || err);
     res.status(500).json({ error: 'token exchange failed' });
+    console.log('Token exchange failed');
   }
 });
+
+// refresh route
+app.get('/api/refresh', async (req, res) => {
+  const refreshToken = req.session.refresh_token;
+  if (!refreshToken) {
+    return res.status(400).json({ error: 'No refresh token in session' });
+  }
+
+  // build the form body
+  const body = new URLSearchParams({
+    grant_type:    'refresh_token',
+    refresh_token: refreshToken,
+    client_id:     process.env.SPOTIFY_CLIENT_ID,
+  });
+
+  try {
+    const { data } = await axios.post(
+      'https://accounts.spotify.com/api/token',
+      body.toString(),
+      { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
+    );
+
+    // update session
+    req.session.access_token = data.access_token;
+    if (data.refresh_token) {
+      req.session.refresh_token = data.refresh_token;
+    }
+    req.session.expires_at = Date.now() + data.expires_in * 1000;
+
+    return res.json({ access_token: data.access_token });
+  } catch (err) {
+    console.error('Refresh failed:', err.response?.data || err);
+    return res.status(500).json({ error: 'Could not refresh token' });
+  }
+});
+
+// GET top tracks from Spotify
+
+app.get('/api/me/top-tracks', async (req, res) => {
+  const token = req.session.access_token;
+  if (!token) {
+    return res.status(401).json({ error: 'Not authenticated' });
+  }
+
+  try {
+    const { data } = await axios.get(
+      'https://api.spotify.com/v1/me/top/tracks',
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    // Spotify returns { items: [...], total, limit, ... }
+    res.json(data);
+  } catch (err) {
+    console.error('Error fetching top tracks:', err.response?.data || err);
+    if (err.response?.status === 401) {
+      return res.status(401).json({ error: 'Token expired' });
+    }
+    res.status(500).json({ error: 'Could not fetch top tracks' });
+  }
+});
+
+
 
 /**
  * Optional helper config route
@@ -136,19 +215,24 @@ app.get('/api/config', (req, res) => {
   if (!SPOTIFY_CLIENT_ID || !SPOTIFY_REDIRECT_URI) {
     return res.status(500).json({ error: 'missing Spotify env vars' });
   }
-  console.log('Middle:', SPOTIFY_CLIENT_ID)
-  
+
   res.json({
     clientId: SPOTIFY_CLIENT_ID,
     redirectUri: SPOTIFY_REDIRECT_URI,
   });
 });
 
-console.log('Fin:', SPOTIFY_CLIENT_ID),
-
 app.get('/', (req, res) => {
   res.send('Spotify Auth Backend is running!');
 });
 
+
+
+
 // Start the server
-module.exports = app;
+const PORT = process.env.PORT || 8888; // Define the port
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`); // Log the server URL
+});
+
+export default app;
