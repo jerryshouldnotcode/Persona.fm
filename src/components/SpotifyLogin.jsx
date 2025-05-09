@@ -10,10 +10,13 @@ async function sha256(buffer) {
   return await crypto.subtle.digest('SHA-256', new TextEncoder().encode(buffer));
 }
 
-function generateVerifier() {
-  const array = new Uint8Array(128);
-  crypto.getRandomValues(array);
-  return [...array].map(b => String.fromCharCode(b)).join('');
+function generateVerifier(length = 128) {
+  const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
+  let verifier = '';
+  for (let i = 0; i < length; i++) {
+    verifier += possible.charAt(Math.floor(Math.random() * possible.length));
+  }
+  return verifier;
 }
 
 export default function SpotifyLogin() {
