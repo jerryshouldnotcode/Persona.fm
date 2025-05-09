@@ -9,8 +9,11 @@ const app = express();
 app.use(express.json());
 
 app.use(cors({
-  origin: ['http://127.0.0.1:5173/', 'https://persona-fm.vercel.app'], // your Vite dev URL
-  credentials: true,                // <— allow cookies to be sent
+  origin: [
+    'http://127.0.0.1:5173',
+    'https://persona-fm.vercel.app'
+  ],
+  credentials: true,
 }));
 
 app.use(session({
@@ -45,7 +48,7 @@ function sha256Base64URL(str) {
 
 // Routes --------------------------------------------------------------
 /**
- * Step 1: /login – redirect user to Spotify with PKCE params
+ * Step 1: /login – redirect user to Spotify with PKCE params
  */
 app.get('/login', (req, res) => {
   const verifier  = genVerifier();
@@ -73,7 +76,7 @@ app.get('/login', (req, res) => {
 });
 
 /**
- * Step 2: /callback – exchange code for tokens using stored verifier
+ * Step 2: /callback – exchange code for tokens using stored verifier
  */
 app.get('/callback', async (req, res) => {
   const { code } = req.query;
