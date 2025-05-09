@@ -4,7 +4,6 @@ import cors from 'cors';
 import session from 'express-session';
 import axios from 'axios';
 import crypto from 'crypto';
-import bodyParser from 'bodyParser';
 
 const app = express();
 app.use(express.json());
