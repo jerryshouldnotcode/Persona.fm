@@ -8,24 +8,26 @@ import crypto from 'crypto';
 const app = express();
 app.use(express.json());
 
-const corsOptions = ({
-  origin: true,
+// allow your front‑end on Vercel *and* your local dev
+const allowed = [
+  'http://localhost:5173',
+  'http://127.0.0.1:5173',
+  'https://persona-fm.vercel.app'
+]
+
+app.use(cors({
+  origin: (origin, cb) => {
+    // if no origin (e.g. curl), allow it
+    if (!origin) return cb(null, true)
+    // only allow whitelisted
+    if (allowed.includes(origin)) return cb(null, true)
+    // otherwise block
+    return cb(new Error(`Origin ${origin} not allowed by CORS`))
+  },
   credentials: true
-});
-app.use(cors(corsOptions));
-console.log('⚙️  CORS enabled with options:', corsOptions);
+}))
 
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin',  req.headers.origin  || '*');
-  res.header('Access-Control-Allow-Credentials', 'true');
-  res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  if (req.method === 'OPTIONS') {
-    return res.sendStatus(204);
-  }
-  next();
-});
-
+// then your session(), json(), routes…
 
 app.use(session({
   secret: process.env.SESSION_SECRET || crypto.randomUUID(),
