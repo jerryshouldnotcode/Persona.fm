@@ -30,11 +30,11 @@ app.use(cors({
 // then your session(), json(), routes…
 
 app.use(session({
-  secret: process.env.SESSION_SECRET || crypto.randomUUID(),
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: true,
   cookie: {
-    sameSite: 'lax',  // or 'none' if you go https+secure
+    sameSite: 'none',  // or 'none' if you go https+secure
     secure: true,    // set to true if you're serving over HTTPS
   }
 }));
