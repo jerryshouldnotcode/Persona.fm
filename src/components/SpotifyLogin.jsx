@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
 export default function SpotifyLogin() {
   const [cfg, setCfg] = useState(null);
@@ -12,7 +13,7 @@ export default function SpotifyLogin() {
   if (!cfg) return <p>Loading…</p>;
 
   return (
-    <button onClick={() => window.location.href = '/login'}>
+    <button onClick={() => window.location.href = `${API_BASE}/login`}>
       Log in with Spotify
     </button>
   );
