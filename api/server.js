@@ -36,9 +36,10 @@ app.use(session({
   cookie: {
     sameSite: 'none',  // or 'none' if you go https+secure
     secure: true,    // set to true if you're serving over HTTPS
+    httpOnly: true
   }
 }));
-
+console.log('Session middleware mounted');
 
 const SPOTIFY_CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
 const SPOTIFY_REDIRECT_URI = process.env.SPOTIFY_REDIRECT_URI;
