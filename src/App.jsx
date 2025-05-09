@@ -1,19 +1,18 @@
-import React from 'react'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import MainApp         from './components/MainApp'
-import SpotifyLogin    from './components/SpotifyLogin'
-import SpotifyCallback from './components/spotifyCallback'
-import About           from './components/About'
+import React, { useState } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import SpotifyLogin    from './components/SpotifyLogin';
+import SpotifyCallback from './components/spotifyCallback';
+import MainApp         from './components/MainApp';
 
 export default function App() {
+  const [token, setToken] = useState(localStorage.getItem('spotify_token') || '');
+
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/"        element={<MainApp />} />
-        <Route path="/login"   element={<SpotifyLogin />} />
-        <Route path="/callback" element={<SpotifyCallback />} />
-        <Route path="/about"    element={<About />} />
+        <Route path="/"        element={token ? <MainApp token={token}/> : <SpotifyLogin />} />
+        <Route path="/callback" element={<SpotifyCallback onToken={setToken}/>} />
       </Routes>
     </BrowserRouter>
-  )
+  );
 }

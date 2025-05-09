@@ -1,20 +1,56 @@
+// src/components/SpotifyLogin.jsx
 import React, { useState, useEffect } from 'react';
-const API_BASE = import.meta.env.VITE_API_BASE_URL;
+
+function base64UrlEncode(buffer) {
+  return btoa(String.fromCharCode(...new Uint8Array(buffer)))
+    .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+async function sha256(buffer) {
+  return await crypto.subtle.digest('SHA-256', new TextEncoder().encode(buffer));
+}
+
+function generateVerifier() {
+  const array = new Uint8Array(128);
+  crypto.getRandomValues(array);
+  return [...array].map(b => String.fromCharCode(b)).join('');
+}
 
 export default function SpotifyLogin() {
   const [cfg, setCfg] = useState(null);
 
   useEffect(() => {
-    fetch('/api/config')
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/config`)
       .then(r => r.json())
-      .then(setCfg);
+      .then(setCfg)
+      .catch(console.error);
   }, []);
 
-  if (!cfg) return <p>Loading…</p>;
+  const handleLogin = async () => {
+    if (!cfg) return;
+    // 1) Create PKCE verifier & challenge
+    const verifier = generateVerifier();
+    const challenge = base64UrlEncode(await sha256(verifier));
+    // 2) Store verifier in localStorage
+    localStorage.setItem('pkce_verifier', verifier);
+    // 3) Build the Spotify authorize URL
+    const params = new URLSearchParams({
+      client_id:     cfg.clientId,
+      response_type: 'code',
+      redirect_uri:  cfg.redirectUri,
+      code_challenge_method: 'S256',
+      code_challenge:        challenge,
+      scope: [
+        'user-read-private',
+        'user-read-email',
+        'user-top-read',
+        'user-read-recently-played'
+      ].join(' ')
+    });
+    // 4) Redirect browser into Spotify
+    window.location.href = `https://accounts.spotify.com/authorize?${params}`;
+  };
 
-  return (
-    <button onClick={() => window.location.href = `${API_BASE}/login`}>
-      Log in with Spotify
-    </button>
-  );
+  if (!cfg) return <p>Loading…</p>;
+  return <button onClick={handleLogin}>Log in with Spotify</button>;
 }
