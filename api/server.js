@@ -8,10 +8,12 @@ import crypto from 'crypto';
 const app = express();
 app.use(express.json());
 
-app.use(cors({
+const corsOptions = ({
   origin: true,
   credentials: true
-}));
+});
+app.use(cors(corsOptions));
+console.log('⚙️  CORS enabled with options:', corsOptions);
 
 app.use(session({
   secret: process.env.SESSION_SECRET || crypto.randomUUID(),
