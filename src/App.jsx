@@ -2,7 +2,7 @@ import React from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import MainApp         from './components/MainApp'
 import SpotifyLogin    from './components/SpotifyLogin'
-import SpotifyCallback from './components/SpotifyCallback'
+import SpotifyCallback from './components/spotifyCallback'
 import About           from './components/About'
 
 export default function App() {
