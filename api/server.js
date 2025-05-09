@@ -65,6 +65,7 @@ function sha256Base64URL(str) {
  * Step 1: /login – redirect user to Spotify with PKCE params
  */
 app.get('/login', (req, res) => {
+  console.log('🔥  /login hit; sessionID =', req.sessionID);
   const verifier  = genVerifier();
   const challenge = sha256Base64URL(verifier);
   req.session.pkceVerifier = verifier; // stash per‑user
