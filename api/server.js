@@ -48,7 +48,7 @@ function sha256Base64URL(str) {
 
 // Routes --------------------------------------------------------------
 /**
- * Step 1: /login – redirect user to Spotify with PKCE params
+ * Step 1: /login – redirect user to Spotify with PKCE params
  */
 app.get('/login', (req, res) => {
   const verifier  = genVerifier();
@@ -76,7 +76,7 @@ app.get('/login', (req, res) => {
 });
 
 /**
- * Step 2: /callback – exchange code for tokens using stored verifier
+ * Step 2: /callback – exchange code for tokens using stored verifier
  */
 app.get('/callback', async (req, res) => {
   const { code } = req.query;
