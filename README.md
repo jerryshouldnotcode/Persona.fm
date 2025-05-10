@@ -1,6 +1,6 @@
-# Persona-fm 
+# Persona-fm - incomplete, looking to complete this summer
 
-Jeremiah's second final project for Digital Identity (EME4930).
+Jeremiah's (initial) second final project for Digital Identity (EME4930).
 
 Tech Stack: React, Vite, Node.js, Express, Spotify API, OpenAI API, Vercel, Git, Railway 
 
